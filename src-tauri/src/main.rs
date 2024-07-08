@@ -1,6 +1,11 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use std::fs::{self, DirEntry};
+use std::io;
+use std::path::Path;
+use rayon::prelude::*;
+
 fn main() {
   tauri::Builder::default()
     .invoke_handler(tauri::generate_handler![get_folder_size, get_subfolders_and_files])
@@ -8,30 +13,36 @@ fn main() {
     .expect("error while running tauri application");
 }
 
+
 #[tauri::command]
 fn get_folder_size(path: String) -> Result<u64, String> {
-  let path = std::path::Path::new(&path);
-  let size = match std::fs::metadata(path) {
-    Ok(metadata) => {
-      if metadata.is_file() {
-        metadata.len()
-      } else {
-        let mut size = 0;
-        for entry in std::fs::read_dir(path).unwrap() {
-          let entry = entry.unwrap();
-          let path = entry.path();
-          if path.is_dir() {
-            size += get_folder_size(path.to_str().unwrap().to_string()).unwrap();
-          } else {
-            size += std::fs::metadata(path).unwrap().len();
-          }
-        }
-        size
-      }
+    let path = Path::new(&path);
+    calculate_size(path).map_err(|e| e.to_string())
+}
+
+fn calculate_size(path: &Path) -> io::Result<u64> {
+    if path.is_file() {
+        return Ok(path.metadata()?.len());
     }
-    Err(_) => 0,
-  };
-  Ok(size)
+
+    let entries: Vec<_> = fs::read_dir(path)?
+        .filter_map(Result::ok)
+        .collect();
+
+    let size: u64 = entries.par_iter()
+        .map(|entry| entry_size(entry))
+        .sum();
+
+    Ok(size)
+}
+
+fn entry_size(entry: &DirEntry) -> u64 {
+    let path = entry.path();
+    if path.is_dir() {
+        calculate_size(&path).unwrap_or(0)
+    } else {
+        entry.metadata().map(|m| m.len()).unwrap_or(0)
+    }
 }
 
 #[tauri::command]
