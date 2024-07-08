@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+	background-color: #251820;
+	color: #f3ddfa;
+
+	font-family: 'Inconsolata', monospace;
+}
+
+/* vertical scrollbar */
+::-webkit-scrollbar {
+	width: 8px;
+}
+
+::-webkit-scrollbar-track {
+	background: #3a2b34;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #67586b;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: #f3ddfa;
+}
