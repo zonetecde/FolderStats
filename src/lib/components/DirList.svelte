@@ -7,6 +7,7 @@
 		pathToCurrentFolder,
 		selectedFolder
 	} from '$lib/stores/GlobalStore';
+	import FolderSize from './FolderSize.svelte';
 </script>
 
 <div class="flex w-10/12 min-h-10 max-h-10 h-10 mt-4 flex-col overflow-y-auto">
@@ -69,46 +70,6 @@
 
 <div class="flex w-10/12 max-h-full min-h-fit mt-4 flex-col overflow-y-auto">
 	{#each $currentSubFolders as subfolder, i}
-		{@const pourcentComparedWithSelectedFolder = $isLoading
-			? 0
-			: (subfolder.size / $selectedFolder.size) * 100}
-		{@const pourcentComparedWithCurrentFolder = $isLoading
-			? 0
-			: (subfolder.size / $currentFolder.size) * 100}
-
-		<div
-			class={'w-full flex flex-row text-xl min-h-8 border-2 divide-x-2 divide-[#1a0d13] border-[#1a0d13] bg-[#5c30583b] duration-100 overflow-x-hidden ' +
-				($currentSubFolders.length - 1 === i ? 'border-b-2 ' : 'border-b-0 ') +
-				($isLoading ? ' blur-[3px]' : '')}
-		>
-			<button
-				class="text-sm pt-1.5 px-1 w-2/12 min-w-[150px] truncate hover:underline text-left"
-				on:click={() => {
-					if ($isLoading) return;
-					pathToCurrentFolder.set([...$pathToCurrentFolder, subfolder]);
-					currentFolder.set(subfolder);
-				}}
-			>
-				{subfolder.name}
-			</button>
-
-			<div class="w-full bg-[#a88bac] relative">
-				<div
-					style="width: {pourcentComparedWithCurrentFolder}%"
-					class="bg-[#6d4569] h-full absolute left-0 top-0"
-				></div>
-
-				<div
-					style="width: {pourcentComparedWithSelectedFolder}%"
-					class="bg-[#473046] h-full absolute left-0 top-0"
-				></div>
-
-				<p class="text-sm pt-1.5 px-1 absolute right-1 text-black">
-					{bytesToFormattedString(subfolder.size)} ({pourcentComparedWithSelectedFolder.toFixed(
-						2
-					)}%) <span class="text-[#473046]">({pourcentComparedWithCurrentFolder.toFixed(2)}%)</span>
-				</p>
-			</div>
-		</div>
+		<FolderSize {subfolder} {i} />
 	{/each}
 </div>

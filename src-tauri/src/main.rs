@@ -5,10 +5,11 @@ use std::fs::{self, DirEntry};
 use std::io;
 use std::path::Path;
 use rayon::prelude::*;
+use std::process::Command;
 
 fn main() {
   tauri::Builder::default()
-    .invoke_handler(tauri::generate_handler![get_folder_size, get_subfolders_and_files])
+    .invoke_handler(tauri::generate_handler![get_folder_size, get_subfolders_and_files, open_folder_in_explorer])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }
@@ -69,4 +70,17 @@ fn get_subfolders_and_files(path: String) -> Result<Vec<String>, String> {
     Err(_) => vec![],
   };
   Ok(subfolders_and_files)
+}
+
+#[tauri::command]
+fn open_folder_in_explorer(path: String) -> Result<(), String> {
+
+  let result = Command::new("explorer")
+    .args(["/select,", &path])
+    .spawn();
+
+  match result {
+    Ok(_) => Ok(()),
+    Err(_) => Err("Failed to open folder in explorer".to_string()),
+  }
 }

@@ -1,5 +1,5 @@
 <script>
-	import { bytesToFormattedString, getDirName, openFolder } from '$lib';
+	import { bytesToFormattedString, getDirName, openFolderDialog } from '$lib';
 	import {
 		currentFolder,
 		currentSubFolders,
@@ -14,7 +14,8 @@
 
 <div class="w-full h-full flex py-4 flex-col items-center">
 	<h1 class="text-2xl">
-		Directory : <button on:click={openFolder}><u>{getDirName($selectedFolderPath ?? '')}</u></button
+		Directory : <button on:click={openFolderDialog}
+			><u>{getDirName($selectedFolderPath ?? '')}</u></button
 		>
 	</h1>
 

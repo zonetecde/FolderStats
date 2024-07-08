@@ -5,6 +5,9 @@
 	import { onMount } from 'svelte';
 
 	onMount(() => {
+		// Disable right click context menu
+		document.addEventListener('contextmenu', (event) => event.preventDefault());
+
 		//@ts-ignore
 		kofiWidgetOverlay.draw('zonetecde', {
 			type: 'floating-chat',

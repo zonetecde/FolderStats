@@ -4,6 +4,15 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+	--ctx-menu-background: #291a3b;
+	--ctx-menu-border: 1px solid #140e0e;
+	--ctx-menu-border-radius: 0.5rem;
+	--ctx-menu-hover-bg: #20152e;
+	--ctx-menu-font-size: 0.9rem;
+	--ctx-menu-padding: 0.375rem 0.5rem;
+}
+
 body {
 	background-color: #251820;
 	color: #f3ddfa;

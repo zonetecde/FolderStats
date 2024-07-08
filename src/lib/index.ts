@@ -2,7 +2,7 @@ import { invoke } from '@tauri-apps/api';
 import { selectedFolderPath } from '$lib/stores/GlobalStore';
 import { open } from '@tauri-apps/api/dialog';
 
-export function openFolder() {
+export function openFolderDialog() {
 	open({
 		multiple: false,
 		directory: true
@@ -10,6 +10,12 @@ export function openFolder() {
 		if (result === null) return;
 
 		selectedFolderPath.set(result as string); // Path vers le dossier
+	});
+}
+
+export function openFolderInExplorer(path: string) {
+	invoke('open_folder_in_explorer', {
+		path: path
 	});
 }
 
