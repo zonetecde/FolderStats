@@ -30,6 +30,7 @@ selectedFolderPath.subscribe(async (folderPath) => {
 });
 
 currentFolder.subscribe(async (folder) => {
+	console.log('currentFolder', folder);
 	if (!folder) return;
 
 	isLoading.set(true);
@@ -37,6 +38,7 @@ currentFolder.subscribe(async (folder) => {
 	const subfolders = await getSubfolders(folder.fullPath);
 
 	let subFolders: Folder[] = [];
+	currentSubFolders.set(subFolders);
 
 	for (const folder of subfolders) {
 		const size = savedSize[folder] || (await getFolderSize(folder));

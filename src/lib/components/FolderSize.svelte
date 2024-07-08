@@ -15,18 +15,13 @@
 
 	let myMenu: ContextMenu;
 
-	$: pourcentComparedWithCurrentFolder = $isLoading
-		? 0
-		: (subfolder.size / $currentFolder.size) * 100;
-	$: pourcentComparedWithSelectedFolder = $isLoading
-		? 0
-		: (subfolder.size / $selectedFolder.size) * 100;
+	$: pourcentComparedWithCurrentFolder = (subfolder.size / $currentFolder.size) * 100;
+	$: pourcentComparedWithSelectedFolder = (subfolder.size / $selectedFolder.size) * 100;
 </script>
 
 <div
 	class={'w-full flex flex-row text-xl min-h-8 border-2 divide-x-2 divide-[#1a0d13] border-[#1a0d13] bg-[#5c30583b] duration-100 overflow-x-hidden ' +
-		($currentSubFolders.length - 1 === i ? 'border-b-2 ' : 'border-b-0 ') +
-		($isLoading ? ' blur-[3px]' : '')}
+		($currentSubFolders.length - 1 === i ? 'border-b-2 ' : 'border-b-0 ')}
 >
 	<button
 		class="text-sm pt-1.5 px-1 w-2/12 min-w-[150px] truncate hover:underline text-left"

@@ -1,12 +1,14 @@
 <script>
-	import { bytesToFormattedString, savedSize } from '$lib';
+	import { bytesToFormattedString, getFolderSize, savedSize } from '$lib';
 	import {
 		currentFolder,
 		currentSubFolders,
 		isLoading,
 		pathToCurrentFolder,
-		selectedFolder
+		selectedFolder,
+		selectedFolderPath
 	} from '$lib/stores/GlobalStore';
+	import { get } from 'svelte/store';
 	import FolderSize from './FolderSize.svelte';
 </script>
 
@@ -40,13 +42,18 @@
 
 		<button
 			class="ml-auto mr-2"
-			on:click={() => {
+			on:click={async () => {
 				// Refresh the current folder
 				for (var prop in savedSize) {
 					if (savedSize.hasOwnProperty(prop)) {
 						delete savedSize[prop];
 					}
 				}
+
+				let _selectedFolder = get(selectedFolder);
+				_selectedFolder.size = await getFolderSize(_selectedFolder.fullPath);
+				selectedFolder.set(_selectedFolder);
+
 				currentFolder.set($currentFolder);
 			}}
 		>
