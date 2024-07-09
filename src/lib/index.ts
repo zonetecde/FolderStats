@@ -49,4 +49,10 @@ export function getDirName(fullPath: string): string {
 	return fullPath.split('\\').reverse()[0];
 }
 
+export async function deleteFromDisk(path: string) {
+	await invoke('delete_from_disk', {
+		path: path
+	});
+}
+
 export let savedSize: { [key: string]: number } = {};

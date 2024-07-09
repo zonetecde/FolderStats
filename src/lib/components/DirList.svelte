@@ -38,6 +38,8 @@
 					}}>{folder.name}</button
 				>{i < $pathToCurrentFolder.length - 1 ? ' / ' : ''}
 			{/each}
+
+			({bytesToFormattedString($pathToCurrentFolder[$pathToCurrentFolder.length - 1].size)})
 		</p>
 
 		<button

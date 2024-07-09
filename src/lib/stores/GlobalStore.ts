@@ -29,13 +29,12 @@ selectedFolderPath.subscribe(async (folderPath) => {
 	pathToCurrentFolder.set([folder]);
 });
 
-currentFolder.subscribe(async (folder) => {
-	console.log('currentFolder', folder);
-	if (!folder) return;
+currentFolder.subscribe(async (currentFolder) => {
+	if (!currentFolder) return;
 
 	isLoading.set(true);
 
-	const subfolders = await getSubfolders(folder.fullPath);
+	const subfolders = await getSubfolders(currentFolder.fullPath);
 
 	let subFolders: Folder[] = [];
 	currentSubFolders.set(subFolders);

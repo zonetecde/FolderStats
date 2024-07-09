@@ -14,8 +14,11 @@
 
 <div class="w-full h-full flex py-4 flex-col items-center">
 	<h1 class="text-2xl">
-		Directory : <button on:click={openFolderDialog}
-			><u>{getDirName($selectedFolderPath ?? '')}</u></button
+		Directory : <button
+			on:click={() => {
+				if ($isLoading) return;
+				openFolderDialog();
+			}}><u>{getDirName($selectedFolderPath ?? '')}</u></button
 		>
 	</h1>
 
@@ -30,10 +33,12 @@
 					<section class="w-20 h-10 bg-[#473046] border border-black" />
 					<p class="text-base">File size compared <br />to selected folder</p>
 				</div>
-				<div class="flex flex-row gap-x-2 items-center">
-					<section class="w-20 h-10 bg-[#6d4569] border border-black" />
-					<p class="text-base">File size compared <br />to current folder</p>
-				</div>
+				{#if $currentFolder.fullPath !== $selectedFolder.fullPath}
+					<div class="flex flex-row gap-x-2 items-center">
+						<section class="w-20 h-10 bg-[#6d4569] border border-black" />
+						<p class="text-base">File size compared <br />to current folder</p>
+					</div>
+				{/if}
 			</div>
 		{/if}
 	{/if}

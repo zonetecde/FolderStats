@@ -9,7 +9,7 @@ use std::process::Command;
 
 fn main() {
   tauri::Builder::default()
-    .invoke_handler(tauri::generate_handler![get_folder_size, get_subfolders_and_files, open_folder_in_explorer])
+    .invoke_handler(tauri::generate_handler![get_folder_size, get_subfolders_and_files, open_folder_in_explorer, delete_from_disk])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }
@@ -82,5 +82,15 @@ fn open_folder_in_explorer(path: String) -> Result<(), String> {
   match result {
     Ok(_) => Ok(()),
     Err(_) => Err("Failed to open folder in explorer".to_string()),
+  }
+}
+
+#[tauri::command]
+fn delete_from_disk(_path: String) -> Result<(), String> {
+  let path = Path::new(&_path);
+  if path.is_file() {
+    fs::remove_file(path).map_err(|e| e.to_string())
+  } else {
+    fs::remove_dir_all(path).map_err(|e| e.to_string())
   }
 }

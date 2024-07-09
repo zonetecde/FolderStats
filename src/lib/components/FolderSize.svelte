@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { bytesToFormattedString, openFolderInExplorer } from '$lib';
+	import { bytesToFormattedString, deleteFromDisk, openFolderInExplorer } from '$lib';
 	import type { Folder } from '$lib/Models/Folder';
 	import {
 		currentFolder,
@@ -50,9 +50,15 @@
 			class="bg-[#473046] h-full absolute left-0 top-0"
 		></div>
 
-		<p class="text-sm pt-1.5 px-1 absolute right-1 text-black">
-			{bytesToFormattedString(subfolder.size)} ({pourcentComparedWithSelectedFolder.toFixed(2)}%)
-			<span class="text-[#473046]">({pourcentComparedWithCurrentFolder.toFixed(2)}%)</span>
+		<p class="text-sm pt-1.5 px-1 absolute right-1">
+			<span class="text-black">
+				{bytesToFormattedString(subfolder.size)} ({pourcentComparedWithSelectedFolder.toFixed(
+					2
+				)}%)</span
+			>
+			{#if $currentFolder.fullPath !== $selectedFolder.fullPath}
+				<span class="text-[#473046]">({pourcentComparedWithCurrentFolder.toFixed(2)}%)</span>
+			{/if}
 		</p>
 	</div>
 </div>
@@ -62,5 +68,17 @@
 		on:click={() => {
 			openFolderInExplorer(subfolder.fullPath);
 		}}>Open folder in explorer</Item
+	>
+	<Item
+		on:click={async () => {
+			if ($currentFolder.fullPath === $selectedFolder.fullPath)
+				$selectedFolder.size -= subfolder.size;
+			else $currentFolder.size -= subfolder.size;
+
+			await deleteFromDisk(subfolder.fullPath);
+
+			// Force a refresh of the current folder
+			currentFolder.set($currentFolder);
+		}}>Delete from disk</Item
 	>
 </ContextMenu>
