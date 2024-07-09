@@ -4,6 +4,17 @@
 @tailwind components;
 @tailwind utilities;
 
+h1,
+h2,
+h3,
+h4,
+h5,
+p,
+span,
+a {
+	user-select: none;
+}
+
 :root {
 	--ctx-menu-background: #291a3b;
 	--ctx-menu-border: 1px solid #140e0e;
