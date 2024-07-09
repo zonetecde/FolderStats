@@ -60,9 +60,9 @@
 
 				//@ts-ignore
 				const onMouseMove = (e) => {
-					let newWidth = initialSize + ((e.clientX - initialWidth) / window.innerWidth) * 100;
+					let newWidth = initialSize + ((e.clientX - initialWidth) / window.innerWidth) * 200;
 					if (newWidth < 0) newWidth = 0;
-					if (newWidth > 100) newWidth = 100;
+					if (newWidth > 200) newWidth = 200;
 
 					leftPartSize.set(newWidth);
 				};
