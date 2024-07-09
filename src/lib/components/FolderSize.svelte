@@ -7,7 +7,8 @@
 		isLoading,
 		pathToCurrentFolder,
 		selectedFolder,
-		leftPartSize
+		leftPartSize,
+		selectedElements
 	} from '$lib/stores/GlobalStore';
 	import ContextMenu, { Item, Divider, Settings } from 'svelte-contextmenu';
 
@@ -16,20 +17,25 @@
 	let truncatText = true;
 
 	let myMenu: ContextMenu;
+	let isSelected = false;
 
 	$: pourcentComparedWithCurrentFolder = (subfolder.size / $currentFolder.size) * 100;
 	$: pourcentComparedWithSelectedFolder = (subfolder.size / $selectedFolder.size) * 100;
 </script>
 
 <div
-	class={'w-full flex flex-row text-xl min-h-8 border-2 border-r-0 border-[#1a0d13] bg-[#5c30583b] duration-100 overflow-x-hidden ' +
+	class={'w-full flex flex-row text-xl min-h-8 border-2 border-r-0 border-[#1a0d13] bg-[#5c30583b] duration-100 overflow-x-hidden relative ' +
 		($currentSubFolders.length - 1 === i ? 'border-b-2 ' : 'border-b-0 ')}
 >
 	<button
-		class="text-sm pt-1.5 px-1 w-2/12 min-w-[150px] hover:overflow-x-auto hover:underline text-left"
+		class="text-sm pt-1.5 px-1 w-2/12 min-w-[150px] hover:overflow-x-auto hover:underline text-left relative group"
 		style={`width: ${$leftPartSize}%`}
 		on:click={(e) => {
 			if ($isLoading) return;
+
+			// Verify if the click is on the checkbox
+			// @ts-ignore
+			if (e.target.tagName === 'INPUT') return;
 
 			pathToCurrentFolder.set([...$pathToCurrentFolder, subfolder]);
 			currentFolder.set(subfolder);
@@ -42,9 +48,28 @@
 			truncatText = false;
 		}}
 	>
-		<p class="text-nowrap hover:text-clip hover:overflow-auto" class:truncate={truncatText}>
+		<p
+			class="text-nowrap group-hover:text-clip group-hover:overflow-auto"
+			class:truncate={truncatText}
+		>
 			{subfolder.name}
 		</p>
+
+		<input
+			type="checkbox"
+			class={'h-full right-2 top-0 absolute group-hover:block accent-purple-500 ' +
+				(!isSelected ? 'hidden' : '')}
+			bind:checked={isSelected}
+			on:change={() => {
+				if (isSelected) {
+					selectedElements.set([...$selectedElements, subfolder]);
+				} else {
+					selectedElements.set(
+						$selectedElements.filter((el) => el.fullPath !== subfolder.fullPath)
+					);
+				}
+			}}
+		/>
 	</button>
 
 	<div class="w-full bg-[#a88bac] relative">
@@ -118,4 +143,20 @@
 			currentFolder.set($currentFolder);
 		}}>Delete from disk</Item
 	>
+	{#if $selectedElements.length >= 1}
+		<Divider />
+		<Item
+			on:click={() => {
+				$selectedElements.forEach((el) => {
+					if ($currentFolder.fullPath === $selectedFolder.fullPath) $selectedFolder.size -= el.size;
+					else $currentFolder.size -= el.size;
+				});
+
+				$selectedElements.map((el) => el.fullPath).forEach(deleteFromDisk);
+
+				// Force a refresh of the current folder
+				currentFolder.set($currentFolder);
+			}}>Delete selected elements</Item
+		>
+	{/if}
 </ContextMenu>

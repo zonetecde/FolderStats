@@ -5,6 +5,7 @@
 		currentSubFolders,
 		isLoading,
 		pathToCurrentFolder,
+		refresh,
 		selectedFolder,
 		selectedFolderPath
 	} from '$lib/stores/GlobalStore';
@@ -46,17 +47,7 @@
 			class="ml-auto mr-2"
 			on:click={async () => {
 				// Refresh the current folder
-				for (var prop in savedSize) {
-					if (savedSize.hasOwnProperty(prop)) {
-						delete savedSize[prop];
-					}
-				}
-
-				let _selectedFolder = get(selectedFolder);
-				_selectedFolder.size = await getFolderSize(_selectedFolder.fullPath);
-				selectedFolder.set(_selectedFolder);
-
-				currentFolder.set($currentFolder);
+				await refresh();
 			}}
 		>
 			<svg
