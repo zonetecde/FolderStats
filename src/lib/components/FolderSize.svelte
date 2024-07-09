@@ -6,7 +6,8 @@
 		currentSubFolders,
 		isLoading,
 		pathToCurrentFolder,
-		selectedFolder
+		selectedFolder,
+		leftPartSize
 	} from '$lib/stores/GlobalStore';
 	import ContextMenu, { Item, Divider, Settings } from 'svelte-contextmenu';
 
@@ -21,11 +22,12 @@
 </script>
 
 <div
-	class={'w-full flex flex-row text-xl min-h-8 border-2 divide-x-2 divide-[#1a0d13] border-[#1a0d13] bg-[#5c30583b] duration-100 overflow-x-hidden ' +
+	class={'w-full flex flex-row text-xl min-h-8 border-2 border-r-0 border-[#1a0d13] bg-[#5c30583b] duration-100 overflow-x-hidden ' +
 		($currentSubFolders.length - 1 === i ? 'border-b-2 ' : 'border-b-0 ')}
 >
 	<button
 		class="text-sm pt-1.5 px-1 w-2/12 min-w-[150px] hover:overflow-x-auto hover:underline text-left"
+		style={`width: ${$leftPartSize}%`}
 		on:click={(e) => {
 			if ($isLoading) return;
 
@@ -46,6 +48,35 @@
 	</button>
 
 	<div class="w-full bg-[#a88bac] relative">
+		<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+		<section
+			aria-roledescription="separator"
+			aria-orientation="vertical"
+			role="separator"
+			class="absolute top-0 h-full w-0.5 bg-[#1a0d13] z-10 cursor-e-resize"
+			on:mousedown={(e) => {
+				let initialWidth = e.clientX;
+				let initialSize = $leftPartSize;
+
+				//@ts-ignore
+				const onMouseMove = (e) => {
+					let newWidth = initialSize + ((e.clientX - initialWidth) / window.innerWidth) * 100;
+					if (newWidth < 0) newWidth = 0;
+					if (newWidth > 100) newWidth = 100;
+
+					leftPartSize.set(newWidth);
+				};
+
+				const onMouseUp = () => {
+					window.removeEventListener('mousemove', onMouseMove);
+					window.removeEventListener('mouseup', onMouseUp);
+				};
+
+				window.addEventListener('mousemove', onMouseMove);
+				window.addEventListener('mouseup', onMouseUp);
+			}}
+		></section>
+
 		<div
 			style="width: {pourcentComparedWithCurrentFolder}%"
 			class="bg-[#6d4569] h-full absolute left-0 top-0"

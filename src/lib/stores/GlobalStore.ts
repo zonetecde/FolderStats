@@ -12,6 +12,8 @@ export const currentSubFolders: Writable<Folder[]> = writable();
 
 export const pathToCurrentFolder: Writable<Folder[]> = writable([]);
 
+export const leftPartSize: Writable<number> = writable(16.666667); // Layout
+
 selectedFolderPath.subscribe(async (folderPath) => {
 	if (!folderPath) return;
 
