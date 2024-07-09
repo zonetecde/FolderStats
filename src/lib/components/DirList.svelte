@@ -39,7 +39,7 @@
 				>{i < $pathToCurrentFolder.length - 1 ? ' / ' : ''}
 			{/each}
 
-			({bytesToFormattedString($pathToCurrentFolder[$pathToCurrentFolder.length - 1].size)})
+			({bytesToFormattedString($currentFolder.size)})
 		</p>
 
 		<button
