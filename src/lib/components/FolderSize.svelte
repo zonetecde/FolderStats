@@ -12,6 +12,7 @@
 
 	export let subfolder: Folder;
 	export let i: number;
+	let truncatText = true;
 
 	let myMenu: ContextMenu;
 
@@ -24,7 +25,7 @@
 		($currentSubFolders.length - 1 === i ? 'border-b-2 ' : 'border-b-0 ')}
 >
 	<button
-		class="text-sm pt-1.5 px-1 w-2/12 min-w-[150px] truncate hover:underline text-left"
+		class="text-sm pt-1.5 px-1 w-2/12 min-w-[150px] hover:overflow-x-auto hover:underline text-left"
 		on:click={(e) => {
 			if ($isLoading) return;
 
@@ -35,8 +36,13 @@
 			myMenu.createHandler();
 			myMenu.show(e);
 		}}
+		on:mouseenter={() => {
+			truncatText = false;
+		}}
 	>
-		{subfolder.name}
+		<p class="text-nowrap hover:text-clip hover:overflow-auto" class:truncate={truncatText}>
+			{subfolder.name}
+		</p>
 	</button>
 
 	<div class="w-full bg-[#a88bac] relative">

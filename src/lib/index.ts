@@ -20,9 +20,15 @@ export function openFolderInExplorer(path: string) {
 }
 
 export async function getFolderSize(path: string): Promise<number> {
+	if (savedSize[path]) {
+		return savedSize[path];
+	}
+
 	const size = await invoke('get_folder_size', {
 		path: path
 	});
+
+	savedSize[path] = size as number;
 
 	return size as number;
 }

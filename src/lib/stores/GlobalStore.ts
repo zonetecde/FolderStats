@@ -17,7 +17,7 @@ selectedFolderPath.subscribe(async (folderPath) => {
 
 	isLoading.set(true);
 
-	const size = savedSize[folderPath] || (await getFolderSize(folderPath));
+	const size = await getFolderSize(folderPath);
 	const folder = {
 		fullPath: folderPath,
 		name: getDirName(folderPath),
@@ -40,15 +40,13 @@ currentFolder.subscribe(async (currentFolder) => {
 	currentSubFolders.set(subFolders);
 
 	for (const folder of subfolders) {
-		const size = savedSize[folder] || (await getFolderSize(folder));
+		const size = await getFolderSize(folder);
 
 		subFolders.push({
 			fullPath: folder,
 			name: getDirName(folder),
 			size: size
 		});
-
-		savedSize[folder] = size;
 
 		// Sort folders by size
 		subFolders.sort((a, b) => {
