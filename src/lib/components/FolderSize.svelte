@@ -104,7 +104,7 @@
 	<Item
 		on:click={() => {
 			openFolderInExplorer(subfolder.fullPath);
-		}}>Open folder in explorer</Item
+		}}>Open in file explorer</Item
 	>
 	<Item
 		on:click={async () => {
