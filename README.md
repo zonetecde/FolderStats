@@ -12,6 +12,8 @@ Once a folder is selected, you will see the size distribution of its subfolders.
 
 FolderStats offers a visual representation of folder sizes, allowing you to easily identify which folders and files are taking up the most space on your device.
 
-![FolderStats main interface](https://github.com/zonetecde/FolderStats/assets/56195432/5140f2d7-150a-414b-968d-c34c8cbec6ee)
-![FolderStats folder analysis](https://github.com/zonetecde/FolderStats/assets/56195432/9056b0ea-7a4c-4134-89c8-42f0ee156ee2)
+![FolderStats folder analysis](https://github.com/user-attachments/assets/5616b481-be59-4743-a90e-b49320049e6d)
+![FolderStats folder analysis](https://github.com/user-attachments/assets/cc4d2be5-6bc4-45b4-9090-35b964d98caf)
+
+
 
