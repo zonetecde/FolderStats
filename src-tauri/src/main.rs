@@ -1,11 +1,12 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::fs::{self, DirEntry};
+use std::fs::{self};
 use std::io;
 use std::path::Path;
 use rayon::prelude::*;
 use std::process::Command;
+use walkdir::WalkDir;
 
 fn main() {
   tauri::Builder::default()
@@ -22,28 +23,22 @@ fn get_folder_size(path: String) -> Result<u64, String> {
 }
 
 fn calculate_size(path: &Path) -> io::Result<u64> {
-    if path.is_file() {
-        return Ok(path.metadata()?.len());
-    }
+  WalkDir::new(path)
+      .into_iter()
+      .par_bridge()
+      .try_fold(
+          || 0u64,
+          |acc, entry| {
+              let entry = match entry {
+                  Ok(entry) => entry,
+                  Err(_) => return Ok(acc),
+              };
 
-    let entries: Vec<_> = fs::read_dir(path)?
-        .filter_map(Result::ok)
-        .collect();
-
-    let size: u64 = entries.par_iter()
-        .map(|entry| entry_size(entry))
-        .sum();
-
-    Ok(size)
-}
-
-fn entry_size(entry: &DirEntry) -> u64 {
-    let path = entry.path();
-    if path.is_dir() {
-        calculate_size(&path).unwrap_or(0)
-    } else {
-        entry.metadata().map(|m| m.len()).unwrap_or(0)
-    }
+              let metadata = entry.metadata()?;
+              Ok(acc + metadata.len())
+          },
+      )
+      .try_reduce(|| 0, |a, b| Ok(a + b))
 }
 
 #[tauri::command]

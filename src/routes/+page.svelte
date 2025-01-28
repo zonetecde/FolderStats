@@ -9,7 +9,7 @@
 		document.addEventListener('contextmenu', (event) => event.preventDefault());
 
 		//@ts-ignore
-		kofiWidgetOverlay.draw('zonetecde', {
+		kofiWidgetOverlay.draw('vzero', {
 			type: 'floating-chat',
 			'floating-chat.donateButton.text': 'Support me',
 			'floating-chat.donateButton.background-color': '#794bc4',

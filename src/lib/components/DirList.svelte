@@ -22,6 +22,9 @@
 				if ($pathToCurrentFolder.length > 1) {
 					pathToCurrentFolder.set($pathToCurrentFolder.splice(0, $pathToCurrentFolder.length - 1));
 					currentFolder.set($pathToCurrentFolder[$pathToCurrentFolder.length - 1]);
+				} else {
+					pathToCurrentFolder.set([]);
+					selectedFolderPath.set('');
 				}
 			}}
 		>
