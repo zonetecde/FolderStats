@@ -80,7 +80,7 @@
 	</div>
 </div>
 
-<div class="flex w-10/12 max-h-full min-h-fit mt-4 flex-col overflow-y-auto">
+<div class="flex w-10/12 mt-4 flex-col overflow-y-auto">
 	{#each $currentSubFolders as subfolder, i}
 		<FolderSize {subfolder} {i} />
 	{/each}
