@@ -18,7 +18,7 @@
 	});
 </script>
 
-<div class="w-screen h-screen overflow-x-hidden">
+<div class="w-screen min-h-screen overflow-x-hidden">
 	{#if !$selectedFolderPath}
 		<ImportFolder />
 	{:else}

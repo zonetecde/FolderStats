@@ -9,7 +9,7 @@
 		selectedFolder,
 		leftPartSize
 	} from '$lib/stores/GlobalStore';
-	import ContextMenu, { Item, Divider, Settings } from 'svelte-contextmenu';
+	import ContextMenu, { Item } from 'svelte-contextmenu';
 
 	export let subfolder: Folder;
 	export let i: number;
@@ -21,14 +21,11 @@
 	$: pourcentComparedWithSelectedFolder = (subfolder.size / $selectedFolder.size) * 100;
 </script>
 
-<div
-	class={'w-full flex flex-row text-xl min-h-8 border-2 border-r-0 border-[#1a0d13] bg-[#5c30583b] duration-100 overflow-x-hidden ' +
-		($currentSubFolders.length - 1 === i ? 'border-b-2 ' : 'border-b-0 ')}
->
+<div class="relative flex flex-col md:flex-row w-full overflow-hidden bg-white/0 group">
 	<button
-		class="text-sm pt-1.5 px-1 w-2/12 min-w-[150px] hover:overflow-x-auto hover:underline text-left"
+		class="relative text-left px-4 py-3 md:py-4 flex items-center gap-3 bg-white/5 hover:bg-white/10 transition-colors border-r border-[var(--border)]"
 		style={`width: ${$leftPartSize}%`}
-		on:click={(e) => {
+		on:click={() => {
 			if ($isLoading) return;
 
 			pathToCurrentFolder.set([...$pathToCurrentFolder, subfolder]);
@@ -42,18 +39,23 @@
 			truncatText = false;
 		}}
 	>
-		<p class="text-nowrap hover:text-clip hover:overflow-auto" class:truncate={truncatText}>
+		<span
+			class="inline-flex items-center justify-center h-7 w-7 rounded-xl bg-[var(--panel-strong)] text-xs text-[var(--accent)] border border-[var(--border)]"
+		>
+			{i + 1}
+		</span>
+		<p class="text-base font-semibold text-white leading-tight text-nowrap" class:truncate={truncatText}>
 			{subfolder.name}
 		</p>
 	</button>
 
-	<div class="w-full bg-[#a88bac] relative">
+	<div class="relative flex-1 min-h-[72px] bg-gradient-to-r from-white/5 to-transparent">
 		<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 		<section
 			aria-roledescription="separator"
 			aria-orientation="vertical"
 			role="separator"
-			class="absolute top-0 h-full w-0.5 bg-[#1a0d13] z-10 cursor-e-resize"
+			class="absolute top-0 left-0 h-full w-1 bg-white/10 hover:bg-[var(--accent)] transition-colors cursor-e-resize z-10"
 			on:mousedown={(e) => {
 				let initialWidth = e.clientX;
 				let initialSize = $leftPartSize;
@@ -79,24 +81,38 @@
 
 		<div
 			style="width: {pourcentComparedWithCurrentFolder}%"
-			class="bg-[#6d4569] h-full absolute left-0 top-0"
+			class="bg-[var(--accent-2)]/30 h-full absolute left-0 top-0"
 		></div>
 
 		<div
 			style="width: {pourcentComparedWithSelectedFolder}%"
-			class="bg-[#473046] h-full absolute left-0 top-0"
+			class="bg-[var(--accent)]/35 h-full absolute left-0 top-0"
 		></div>
 
-		<p class="text-sm pt-1.5 px-1 absolute right-1">
-			<span class="text-black">
-				{bytesToFormattedString(subfolder.size)} ({pourcentComparedWithSelectedFolder.toFixed(
-					2
-				)}%)</span
-			>
-			{#if $currentFolder.fullPath !== $selectedFolder.fullPath}
-				<span class="text-[#473046]">({pourcentComparedWithCurrentFolder.toFixed(2)}%)</span>
-			{/if}
-		</p>
+		<div class="relative flex flex-col md:flex-row items-start md:items-center justify-between px-4 py-3 gap-2">
+			<div class="flex flex-col">
+				<span class="text-sm text-[var(--muted)]">Poids</span>
+				<span class="text-lg font-semibold">
+					{bytesToFormattedString(subfolder.size)}
+				</span>
+			</div>
+			<div class="flex flex-wrap items-center gap-2 md:gap-4 text-xs text-[var(--muted)]">
+				<span
+					class="inline-flex items-center gap-2 px-2 py-1 rounded-full border border-[var(--border)] bg-white/5"
+				>
+					<span class="h-2 w-6 rounded-full bg-[var(--accent)]/80"></span>
+					{pourcentComparedWithSelectedFolder.toFixed(2)}% du dossier sélectionné
+				</span>
+				{#if $currentFolder.fullPath !== $selectedFolder.fullPath}
+					<span
+						class="inline-flex items-center gap-2 px-2 py-1 rounded-full border border-[var(--border)] bg-white/5"
+					>
+						<span class="h-2 w-6 rounded-full bg-[var(--accent-2)]/90"></span>
+						{pourcentComparedWithCurrentFolder.toFixed(2)}% du dossier courant
+					</span>
+				{/if}
+			</div>
+		</div>
 	</div>
 </div>
 
